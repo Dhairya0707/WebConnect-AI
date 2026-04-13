@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebConnect AI - Intelligent Insights</title>
+    <!-- IBM Plex Sans and Source Code Pro -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Source+Code+Pro:wght@500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Switched to a light theme for the warm aesthetic -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            /* PostHog Inspired Palette */
+            --bg-parchment: #fdfdf8;
+            --bg-sage: #eeefe9;
+            --bg-sage-light: #e5e7e0;
+            --text-olive: #4d4f46;
+            --text-deep: #23251d;
+            --text-muted: #65675e;
+            --text-placeholder: #9ea096;
+            --border-sage: #bfc1b7;
+            --border-light: #b6b7af;
+
+            /* Accents */
+            --accent-orange: #F54E00;
+            --accent-gold: #F7A501;
+            --focus-blue: rgba(59, 130, 246, 0.5);
+            --btn-dark: #1e1f23;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-parchment);
+            color: var(--text-olive);
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1.5rem;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            /* Tighter editorial column */
+        }
+
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--text-deep);
+        }
+
+        h1 {
+            color: var(--text-deep);
+            font-size: clamp(36px, 5vw, 48px);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.75px;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* The Workbench Input */
+        .search-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: transparent;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            width: 100%;
+            background: var(--bg-sage);
+            border: 1px solid var(--border-light);
+            color: var(--text-deep);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 18px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder {
+            color: var(--text-placeholder);
+            font-weight: 500;
+        }
+
+        input:focus {
+            border-color: var(--text-deep);
+            box-shadow: 0 0 0 4px var(--focus-blue);
+            background: #ffffff;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            background: var(--btn-dark);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            opacity: 0.85;
+            color: var(--accent-gold);
+        }
+
+        button:active {
+            opacity: 1;
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: var(--border-sage);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Area - Document Style */
+        #result-container {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border-sage);
+            border-radius: 4px;
+            padding: 2.5rem 2rem;
+            display: none;
+        }
+
+        /* Editorial Markdown Styling */
+        #result-content {
+            font-size: 16px;
+            color: var(--text-olive);
+            line-height: 1.6;
+        }
+
+        #result-content h1,
+        #result-content h2,
+        #result-content h3 {
+            color: var(--text-deep);
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            letter-spacing: -0.5px;
+        }
+
+        #result-content h1 {
+            font-size: 32px;
+            line-height: 1.2;
+            margin-top: 0;
+        }
+
+        #result-content h2 {
+            font-size: 24px;
+            line-height: 1.33;
+            border-bottom: 1px solid var(--bg-sage);
+            padding-bottom: 8px;
+        }
+
+        #result-content h3 {
+            font-size: 20px;
+            line-height: 1.4;
+        }
+
+        #result-content p {
+            margin-bottom: 1.25rem;
+        }
+
+        #result-content a {
+            color: var(--text-deep);
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 2px;
+            transition: color 0.1s ease;
+        }
+
+        #result-content a:hover {
+            color: var(--accent-orange);
+            text-decoration-color: var(--accent-orange);
+        }
+
+        #result-content strong {
+            color: var(--text-deep);
+            font-weight: 700;
+        }
+
+        #result-content ul,
+        #result-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #result-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        #result-content code {
+            font-family: 'Source Code Pro', monospace;
+            background: var(--bg-sage);
+            border: 1px solid var(--border-sage);
+            color: var(--text-deep);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        #result-content pre {
+            background: var(--bg-sage-light);
+            border: 1px solid var(--border-sage);
+            border-radius: 4px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        #result-content pre code {
+            background: transparent;
+            border: none;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        #result-content blockquote {
+            border-left: 4px solid var(--border-sage);
+            padding-left: 1rem;
+            margin-left: 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        #result-content hr {
+            border: 0;
+            border-top: 1px solid var(--border-sage);
+            margin: 2.5rem 0;
+        }
+
+        /* Sources Section */
+        .sources-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px dashed var(--border-sage);
+        }
+
+        .sources-title {
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-deep);
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .source-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .source-tag {
+            background: var(--bg-sage);
+            color: var(--text-olive);
+            border: 1px solid var(--border-sage);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.1s ease;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .source-tag:hover {
+            background: #ffffff;
+            color: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+
+        /* Brutalist Loading Animation */
+        .loading {
+            display: none;
+            width: 100%;
+            background: var(--bg-sage);
+            border: 1px solid var(--border-sage);
+            border-radius: 4px;
+            padding: 2rem;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .terminal-loader {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            color: var(--text-deep);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: var(--accent-orange);
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 2rem 1rem;
+            }
+
+            #result-container {
+                padding: 1.5rem 1rem;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>WebConnect AI</h1>
+            <p class="subtitle">Intelligence with a live web connection</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <div class="input-wrapper">
+                    <input type="text" id="query" placeholder="Query the collective knowledge..." autocomplete="off">
+                </div>
+                <div class="controls">
+                    <button id="search-btn">
+                        <span>Execute Search</span>
+                        <span id="btn-icon">↵</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="terminal-loader">
+                <span id="status-text">Initializing connection...</span>
+                <span class="cursor"></span>
+            </div>
+        </div>
+
+        <div id="result-container">
+            <div id="result-content"></div>
+            <div id="sources-container" class="sources-section" style="display: none;">
+                <div class="sources-title">Referenced Artifacts</div>
+                <div id="source-tags" class="source-tags"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const queryInput = document.getElementById('query');
+        const searchBtn = document.getElementById('search-btn');
+        const loading = document.getElementById('loading');
+        const resultContainer = document.getElementById('result-container');
+        const resultContent = document.getElementById('result-content');
+        const statusText = document.getElementById('status-text');
+
+        const statusMessages = [
+            "Parsing intent...",
+            "Querying external indices...",
+            "Compiling document vectors...",
+            "Synthesizing response payload...",
+            "Finalizing output..."
+        ];
+
+        let statusInterval;
+
+        function updateStatus() {
+            let i = 0;
+            statusText.innerText = statusMessages[0];
+            statusInterval = setInterval(() => {
+                i++;
+                statusText.innerText = statusMessages[i % statusMessages.length];
+            }, 2500);
+        }
+
+        async function performSearch() {
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            // UI State
+            searchBtn.disabled = true;
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+            resultContent.innerHTML = '';
+            const sourcesContainer = document.getElementById('sources-container');
+            const sourceTags = document.getElementById('source-tags');
+            sourcesContainer.style.display = 'none';
+            sourceTags.innerHTML = '';
+
+            updateStatus();
+
+            try {
+                // Mocking the fetch for preview environments where backend might not exist
+                // If actual endpoint exists, it will use it.
+                let data;
+                try {
+                    const response = await fetch('/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query })
+                    });
+                    if (response.ok) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('Network response was not ok.');
+                    }
+                } catch (e) {
+                    // Fallback mock data to demonstrate the UI in standalone mode
+                    await new Promise(r => setTimeout(r, 4000));
+                    data = {
+                        content: "## Architectural Overview\n\nThe system utilizes a decentralized agentic protocol to traverse distributed datasets. When executing a query like **\"" + query + "\"**, the orchestration layer spawns micro-agents that evaluate context.\n\n### Key Components\n\n1. **Vector Store:** Maintains high-dimensional embeddings of all documentation.\n2. **Synthesis Engine:** Compiles agent findings into cohesive Markdown.\n\nThis is a fallback response since the local server connection failed or is in demo mode.",
+                        sources: [
+                            { title: "Agentic Design Patterns", url: "https://example.com/patterns" },
+                            { title: "Vector Database Fundamentals", url: "https://example.com/vectors" }
+                        ]
+                    };
+                }
+
+                if (data && data.content) {
+                    resultContent.innerHTML = marked.parse(data.content);
+
+                    // Render sources if available
+                    if (data.sources && data.sources.length > 0) {
+                        sourcesContainer.style.display = 'block';
+                        sourceTags.innerHTML = '';
+                        // Remove duplicates and empty titles
+                        const uniqueSources = Array.from(new Set(data.sources.map(s => s.url)))
+                            .map(url => data.sources.find(s => s.url === url))
+                            .filter(s => s && s.title && s.url);
+
+                        uniqueSources.forEach(source => {
+                            const tag = document.createElement('a');
+                            tag.href = source.url;
+                            tag.target = '_blank';
+                            tag.className = 'source-tag';
+                            tag.textContent = source.title;
+                            tag.title = source.url; // Tooltip for URL
+                            sourceTags.appendChild(tag);
+                        });
+                    }
+
+                    // Trigger highlight.js
+                    document.querySelectorAll('#result-content pre code').forEach((el) => {
+                        hljs.highlightElement(el);
+                    });
+
+                    resultContainer.style.display = 'block';
+                    resultContainer.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    resultContent.innerHTML = `<div style="color: #F54E00; font-weight: 600;">Error: No content returned from the intelligence layer.</div>`;
+                    resultContainer.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                resultContent.innerHTML = `<div style="color: #F54E00; font-weight: 600;">Error: Connection to WebConnect AI failed.</div>`;
+                resultContainer.style.display = 'block';
+            } finally {
+                searchBtn.disabled = false;
+                loading.style.display = 'none';
+                clearInterval(statusInterval);
+            }
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+        queryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    </script>
+</body>
+
+</html>
