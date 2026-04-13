@@ -7,7 +7,7 @@ WebConnect AI is an advanced, autonomous searching agent designed to give Large 
 [![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Model](https://img.shields.io/badge/Model-NVIDIA%20Mistral--Small-76B900?style=flat-square&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
 [![Search](https://img.shields.io/badge/Search-DuckDuckGo-DE5833?style=flat-square&logo=duckduckgo&logoColor=white)](https://duckduckgo.com/)
-[![UI](https://img.shields.io/badge/UI-Modern%20Workbench-FF6F00?style=flat-square)](https://github.com/yourusername/webconnect-ai)
+[![UI](https://img.shields.io/badge/UI-Modern%20Workbench-FF6F00?style=flat-square)](https://github.com/Dhairya0707/WebConnect-AI)
 
 ---
 
@@ -53,7 +53,7 @@ graph TD
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/webconnect-ai.git
+git clone https://github.com/Dhairya0707/WebConnect-AI.git
 cd webconnect-ai
 
 # Setup virtual environment
@@ -79,6 +79,28 @@ NVIDIA_API_KEY=your-nvapi-key-here
 python main.py
 ```
 Visit **`http://localhost:8000`** to start searching.
+
+---
+
+## 🚂 Railway Deployment Guide
+
+Deploying WebConnect AI to Railway is simple and takes less than 2 minutes.
+
+### 1. Connect Repository
+- Go to [Railway.app](https://railway.app/).
+- Click **"New Project"** -> **"Deploy from GitHub repo"**.
+- Select the `Dhairya0707/WebConnect-AI` repository.
+
+### 2. Configure Variables
+Railway will automatically detect the `requirements.txt` and `Procfile`. However, you must add your API key:
+- Click on your project in Railway.
+- Go to the **Variables** tab.
+- Add `NVIDIA_API_KEY`: `your-nvapi-key-here`.
+
+### 3. Exposing the App
+- Go to the **Settings** tab of your service.
+- Click **"Generate Domain"** to get a public URL for your search engine.
+- Railway will handle the `PORT` automatically thanks to the updated `main.py`.
 
 ---
 
@@ -110,4 +132,4 @@ Contributions are welcome! If you have ideas for better scraping heuristics or U
 
 ---
 
-*Handcrafted for the Developer Community by [Your Name]*
+*Handcrafted for the Developer Community by [Dhairya Darji](https://github.com/Dhairya0707)*
