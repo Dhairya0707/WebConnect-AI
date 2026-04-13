@@ -82,26 +82,6 @@ Visit **`http://localhost:8000`** to start searching.
 
 ---
 
-## 🚂 Railway Deployment Guide
-
-Deploying WebConnect AI to Railway is simple and takes less than 2 minutes.
-
-### 1. Connect Repository
-- Go to [Railway.app](https://railway.app/).
-- Click **"New Project"** -> **"Deploy from GitHub repo"**.
-- Select the `Dhairya0707/WebConnect-AI` repository.
-
-### 2. Configure Variables
-Railway will automatically detect the `requirements.txt` and `Procfile`. However, you must add your API key:
-- Click on your project in Railway.
-- Go to the **Variables** tab.
-- Add `NVIDIA_API_KEY`: `your-nvapi-key-here`.
-
-### 3. Exposing the App
-- Go to the **Settings** tab of your service.
-- Click **"Generate Domain"** to get a public URL for your search engine.
-- Railway will handle the `PORT` automatically thanks to the updated `main.py`.
-
 ---
 
 ## 📂 Project Anatomy

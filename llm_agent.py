@@ -14,6 +14,9 @@ invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
 # API Key from environment variable
 API_KEY = os.getenv("NVIDIA_API_KEY")
 
+if not API_KEY:
+    print("[llm_agent] WARNING: NVIDIA_API_KEY is not set. /search will return a clear error until it is configured.")
+
 headers = {
     "Authorization": f"Bearer {API_KEY}",
     "Accept": "application/json",
@@ -186,6 +189,15 @@ def run_agent_loop(user_input: str):
     1. Initial LLM call to decide if search is needed.
     2. Optional tool execution followed by a final synthesis call.
     """
+    if not API_KEY:
+        return {
+            "content": (
+                "Server configuration error: NVIDIA_API_KEY is missing. "
+                "Set the environment variable in Railway and redeploy."
+            ),
+            "sources": []
+        }
+
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user",   "content": user_input}
